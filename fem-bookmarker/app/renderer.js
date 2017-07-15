@@ -1,7 +1,21 @@
+const { shell, remote } = require('electron');
+const systemPreferences = remote.systemPreferences;
+
+
+
 const newLinkUrl = document.querySelector('#new-link-url');
 const newLinkSubmit = document.querySelector('.new-link-form--submit');
 const newLinkForm = document.querySelector('.new-link-form');
 const linkTemplate = document.querySelector('#link-template');
+const linksSection = document.querySelector('.links');
+
+linksSection.addEventListener('click', (event) => {
+  //if the targeted elemeent in the linkSection has an href property(if it's a url), then open it in the user's default operating system
+  if(event.target.href) {
+    event.preventDefault();
+    shell.openExternal(event.target.href);
+  }
+});
 
 newLinkUrl.addEventListener('keyup', () => {
   newLinkSubmit.disabled = !newLinkUrl.validity.valid;
@@ -18,7 +32,7 @@ const addToPage = ({ title, url }) => {
 
   titleElement.textContent = title;
   urlElement.href = url;
-  url.textContent = url;
+  urlElement.textContent = url;
 
   linksSection.appendChild(newLink);
   return { title, url };
@@ -33,6 +47,14 @@ newLinkForm.addEventListener('submit', () => {
   .then(response => response.text())
   .then(parseResponse)
   .then(findTitle)
+  .then(title => ({ title, url }))
+  .then(addToPage)
   .then(title => console.log(title))
   .catch(error => console.error(error));
+});
+
+window.addEventListener('load', () => {
+  if(systemPreferences.isDarkMode()) {
+    document.querySelector('link').href = 'styles-dark.css';
+  }
 });

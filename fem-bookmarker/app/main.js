@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow} = require('electron');
 
 let mainWindow = null;
 
@@ -18,4 +18,9 @@ app.on('ready', () => {
   });
 
   mainWindow.loadURL(`file://$${__dirname}/index.html`);
+  //devtron opens up a set up tools in chrome develoepr console that looks at the event listeners and audits things.
+  //is my app accessible?
+  //need to npm install it
+  //can install React devtools! or Ng-Inspector. ETC
+  require('devtron').install();
 });
